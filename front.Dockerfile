@@ -172,7 +172,7 @@ COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
 # Packages
 ###########################################################################
 
-RUN apk add --update mysql-client zlib-dev libzip-dev bash curl build-base automake autoconf libtool nasm jpegoptim optipng pngquant gifsicle
+RUN apk add --update tzdata mysql-client zlib-dev libzip-dev bash curl build-base automake autoconf libtool nasm jpegoptim optipng pngquant gifsicle
 
 # Install PHP Extensions
 RUN docker-php-ext-install zip \

@@ -4,7 +4,7 @@ FROM php:7.4-cli-alpine
 # Packages
 ###########################################################################
 
-RUN apk add --update npm mysql-client zlib-dev libzip-dev bash curl build-base automake autoconf libtool nasm libpng-dev jpeg-dev jpegoptim optipng pngquant gifsicle
+RUN apk add --update --no-cache tzdata npm mysql-client zlib-dev libzip-dev bash curl build-base automake autoconf libtool nasm libpng-dev jpeg-dev jpegoptim optipng pngquant gifsicle
 
 # Fix Alpine iconv https://github.com/nunomaduro/phpinsights/issues/43
 RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ --allow-untrusted gnu-libiconv

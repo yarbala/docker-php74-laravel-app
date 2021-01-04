@@ -1,1 +1,1 @@
-/var/www true ${PGID}:${PUID} 0644:0755
+/var/www true www-data:www-data 0644:0755
