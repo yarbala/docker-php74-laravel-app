@@ -1,6 +1,7 @@
 FROM php:7.4-fpm-alpine3.10
 
 ENV S6_OVERLAY_VERSION=v1.22.1.0
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 ####################################################################################
 # BEGIN: Install nginx to container. Taken from /fholzer/docker-nginx-brotli/
@@ -172,32 +173,25 @@ COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
 # Packages
 ###########################################################################
 
-RUN apk add --update tzdata mysql-client zlib-dev libzip-dev bash curl build-base automake autoconf libtool nasm jpegoptim optipng pngquant gifsicle
-
-# Install PHP Extensions
-RUN docker-php-ext-install zip \
+RUN apk add --update tzdata mysql-client zlib-dev libzip-dev bash curl build-base automake autoconf \
+  libtool nasm jpegoptim optipng pngquant gifsicle && \
+  docker-php-ext-install zip \
   && docker-php-ext-install bcmath \
   && docker-php-ext-install pdo \
   && docker-php-ext-install pdo_mysql \
-  && docker-php-ext-install mysqli
-
-# Fix Alpine iconv https://github.com/nunomaduro/phpinsights/issues/43
-RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ --allow-untrusted gnu-libiconv
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
-
-# Install GD library
-RUN apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libwebp-dev libjpeg-turbo-dev && \
-  docker-php-ext-configure gd \
+  && docker-php-ext-install mysqli \
+  && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ --allow-untrusted gnu-libiconv \
+  && apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libwebp-dev libjpeg-turbo-dev \
+  && docker-php-ext-configure gd \
     --with-freetype=/usr/include/ \
     --with-jpeg=/usr/include/ \
-    --with-webp=/usr/include/ && \
-  NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
-  docker-php-ext-install -j${NPROC} gd && \
-  docker-php-ext-install exif
-
-
-RUN pecl install redis && docker-php-ext-enable redis
-RUN docker-php-source delete && rm -rf /tmp/*
+    --with-webp=/usr/include/ \
+  && NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
+  && docker-php-ext-install -j${NPROC} gd \
+  && docker-php-ext-install exif \
+  && pecl install redis && docker-php-ext-enable redis \
+  && docker-php-source delete && rm -rf /tmp/* \
+  && rm -rf /etc/apk/cache
 
 ADD ./default.conf /etc/nginx/conf.d/default.conf
 
