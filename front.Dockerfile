@@ -2,6 +2,7 @@ FROM php:7.4-fpm-alpine3.10
 
 ENV S6_OVERLAY_VERSION=v1.22.1.0
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+ENV PHP_FPM_PM_MAX_CHILDREN=25
 
 ####################################################################################
 # BEGIN: Install nginx to container. Taken from /fholzer/docker-nginx-brotli/
@@ -168,6 +169,7 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 COPY services.d /etc/services.d
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
+COPY opcache.ini /usr/local/etc/php/opcache_disabled.ini
 
 ###########################################################################
 # Packages

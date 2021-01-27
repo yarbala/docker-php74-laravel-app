@@ -24,7 +24,7 @@ RUN apk add --update --no-cache tzdata npm mysql-client zlib-dev libzip-dev bash
   && NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) \
   && docker-php-ext-install -j${NPROC} gd \
   && docker-php-ext-install exif \
-  && apk add graphviz \
+  && apk add --no-cache graphviz \
   && pecl install redis && docker-php-ext-enable redis \
   && docker-php-source delete && rm -rf /tmp/* \
   && rm -rf /etc/apk/cache
