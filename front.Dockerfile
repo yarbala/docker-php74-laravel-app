@@ -149,7 +149,12 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	\
 	# forward request and error logs to docker log collector
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
-	&& ln -sf /dev/stderr /var/log/nginx/error.log
+	&& ln -sf /dev/stderr /var/log/nginx/error.log \
+	# Bring php-fpm configs into a more controallable state
+    && rm /usr/local/etc/php-fpm.d/www.conf.default \
+    && mv /usr/local/etc/php-fpm.d/docker.conf /usr/local/etc/php-fpm.d/00-docker.conf \
+    && mv /usr/local/etc/php-fpm.d/www.conf /usr/local/etc/php-fpm.d/10-www.conf \
+    && mv /usr/local/etc/php-fpm.d/zz-docker.conf /usr/local/etc/php-fpm.d/20-docker.conf
 
 ####################################################################################
 # END: Install nginx to container
@@ -168,14 +173,14 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 COPY services.d /etc/services.d
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
-COPY custom-fpm.conf /usr/local/etc/php-fpm.d/custom-fpm.conf
+COPY www.conf /usr/local/etc/php-fpm.d/50-www.conf
 COPY opcache.ini /usr/local/etc/php/opcache_disabled.ini
 
 ###########################################################################
 # Packages
 ###########################################################################
 
-RUN apk add --update tzdata mysql-client zlib-dev libzip-dev bash curl build-base automake autoconf \
+RUN apk add --update tzdata mysql-client zlib-dev libzip-dev bash curl build-base automake autoconf npm \
   libtool nasm jpegoptim optipng pngquant gifsicle && \
   docker-php-ext-install zip \
   && docker-php-ext-install bcmath \
@@ -183,7 +188,8 @@ RUN apk add --update tzdata mysql-client zlib-dev libzip-dev bash curl build-bas
   && docker-php-ext-install pdo_mysql \
   && docker-php-ext-install mysqli \
   && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ --allow-untrusted gnu-libiconv \
-  && apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libwebp-dev libjpeg-turbo-dev \
+  && apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libwebp-tools libwebp-dev libjpeg-turbo-dev \
+  && npm install -g svgo \
   && docker-php-ext-configure gd \
     --with-freetype=/usr/include/ \
     --with-jpeg=/usr/include/ \

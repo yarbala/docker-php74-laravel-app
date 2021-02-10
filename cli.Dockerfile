@@ -16,7 +16,8 @@ RUN apk add --update --no-cache tzdata npm mysql-client zlib-dev libzip-dev bash
   && docker-php-ext-install mysqli \
   && docker-php-ext-install pcntl \
   && docker-php-ext-configure pcntl --enable-pcntl \
-  && apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libwebp-dev libjpeg-turbo-dev \
+  && apk add --no-cache freetype libpng libjpeg-turbo freetype-dev libpng-dev libwebp-tools libwebp-dev libjpeg-turbo-dev \
+  && npm install -g svgo \
   && docker-php-ext-configure gd \
     --with-freetype=/usr/include/ \
     --with-jpeg=/usr/include/ \
