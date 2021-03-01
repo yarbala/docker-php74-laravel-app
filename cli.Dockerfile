@@ -30,4 +30,6 @@ RUN apk add --update --no-cache tzdata npm mysql-client zlib-dev libzip-dev bash
   && docker-php-source delete && rm -rf /tmp/* \
   && rm -rf /etc/apk/cache
 
-WORKDIR /var/www
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
