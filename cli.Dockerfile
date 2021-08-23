@@ -6,7 +6,7 @@ ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 # Packages
 ###########################################################################
 
-RUN apk add --update --no-cache tzdata npm mysql-client zlib-dev libzip-dev bash curl build-base \
+RUN apk add --update --no-cache nodejs npm tzdata mysql-client zlib-dev libzip-dev bash curl build-base \
   automake autoconf libtool nasm libpng-dev jpeg-dev jpegoptim optipng pngquant gifsicle \
   && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ --allow-untrusted gnu-libiconv \
   && docker-php-ext-install zip \
@@ -30,6 +30,9 @@ RUN apk add --update --no-cache tzdata npm mysql-client zlib-dev libzip-dev bash
   && docker-php-source delete && rm -rf /tmp/* \
   && rm -rf /etc/apk/cache
 
+###########################################################################
+# composer
+###########################################################################
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
