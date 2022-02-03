@@ -173,6 +173,7 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 COPY services.d /etc/services.d
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
+COPY logs-php.ini /usr/local/etc/php/conf.d/logs-php.ini
 COPY www.conf /usr/local/etc/php-fpm.d/50-www.conf
 COPY opcache.ini /usr/local/etc/php/opcache_disabled.ini
 
