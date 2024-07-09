@@ -2,6 +2,8 @@ FROM php:7.4-cli-alpine
 
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
+COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
+
 ###########################################################################
 # Packages
 ###########################################################################

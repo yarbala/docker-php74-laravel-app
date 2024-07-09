@@ -6,11 +6,11 @@ ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 # Node
 ###########################################################################
 
-COPY --from=node:12.16.3-alpine /usr/lib /usr/lib
-COPY --from=node:12.16.3-alpine /usr/local/share /usr/local/share
-COPY --from=node:12.16.3-alpine /usr/local/lib /usr/local/lib
-COPY --from=node:12.16.3-alpine /usr/local/include /usr/local/include
-COPY --from=node:12.16.3-alpine /usr/local/bin /usr/local/bin
+COPY --from=node:14.13-alpine /usr/lib /usr/lib
+COPY --from=node:14.13-alpine /usr/local/share /usr/local/share
+COPY --from=node:14.13-alpine /usr/local/lib /usr/local/lib
+COPY --from=node:14.13-alpine /usr/local/include /usr/local/include
+COPY --from=node:14.13-alpine /usr/local/bin /usr/local/bin
 
 ###########################################################################
 # Packages
@@ -39,9 +39,6 @@ RUN apk add --update --no-cache tzdata mysql-client zlib-dev libzip-dev bash cur
   && pecl install redis && docker-php-ext-enable redis \
   && docker-php-source delete && rm -rf /tmp/* \
   && rm -rf /etc/apk/cache
-
-
-COPY memory-limit-php.ini /usr/local/etc/php/conf.d/memory-limit-php.ini
 
 ###########################################################################
 # composer
